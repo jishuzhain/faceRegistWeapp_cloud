@@ -11,7 +11,6 @@ class Notify {
     }
   }
   _xcNotify(msg, color) {
-    console.log('color', color)
     return vanNotify({
       ...this.options, 
       text: msg,

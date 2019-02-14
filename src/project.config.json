@@ -1,10 +1,13 @@
 {
   "miniprogramRoot": "./",
   "qcloudRoot": "./static/cloudFunctions/",
+  "cloudfunctionRoot": "./static/cloudFunctions/",
+  "libVersion": "2.2.5",
   "setting": {
     "postcss": true,
     "es6": true,
     "minified": true,
+    "newFeature": true,
     "urlCheck": false
   },
   "packOptions": {},

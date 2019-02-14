@@ -1,5 +1,7 @@
 import CONSTANT from '../base/constant/constant';
-import Notify from '../../static/vant/notify/notify';
+//import Notify from '../../static/vant/notify/notify';
+import Notify from './notify';
+import Toast from '../../static/vant/toast/toast';
 
 
 function formatNumber (n) {
@@ -42,16 +44,41 @@ export const respShowError = resp => {
   console.warn('进入respShowError')
   if(resp && resp.data && resp.data.statusCode !== '0') {
     console.error(resp.data.describe)
-    Notify({
-      text: resp.data.describe,
-      duration: 1000,
-      selector: '#van-notify',
-      backgroundColor: CONSTANT.COLOR.DANGER
-    })
+    Notify.error(resp.data.describe)
   } else {
     console.error('无法打印describe', resp)
   }
 }
+
+/**
+ * @desc 服务器返回的判断是否有data
+ * @param {Object} resp 
+ * @return {Boolean} 是否有data
+ */
+export const cloudRespHasNext = resp => {
+  if(resp && resp.result && resp.result.statusCode === '0') {
+    return resp;
+  }
+  return Promise.reject(resp);
+}
+
+/**
+ * @desc 服务器返回的错误处理
+ * @param {Object} resp 
+ */
+export const cloudRespShowError = resp => {
+  console.warn('进入 cloudRespShowError')
+  console.log('打印resp')
+  console.error(resp)
+  Toast.clear();
+  if(resp && resp.result && resp.result.statusCode !== '0') {
+    console.error(resp.result.describe)
+    Notify.error(resp.result.describe)
+  } else {
+    console.error('无法打印describe', resp)
+  }
+}
+
 
 export default {
   formatNumber,

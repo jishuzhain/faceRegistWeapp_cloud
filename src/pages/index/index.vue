@@ -56,7 +56,7 @@ import Toast from '../../../static/vant/toast/toast';
 import Notify from '../../utils/notify';
 
 import { http_saveVisitor } from '@/utils/http';
-import { respShowError } from '@/utils/index';
+import { cloudRespHasNext, cloudRespShowError, respShowError } from '@/utils/index';
 
 const fileManager = wx.getFileSystemManager();
 
@@ -171,11 +171,21 @@ export default {
         success(resp) {
           params.faceImage = resp.data;    //服务器需要base64图片
           console.warn('发起请求')
-          http_saveVisitor(params, {loading: true})
-            .then(resp => {
-              Notify.success("新增访客成功");
-            })
-            .catch(respShowError)
+          // http_saveVisitor(params, {loading: true})
+          //   .then(resp => {
+          //     Notify.success("新增访客成功");
+          //   })
+          //   .catch(respShowError)
+          wx.cloud.callFunction({
+            name: 'saveVisitor',
+            data: { params, custom: {loading: true} }
+          })
+          .then(cloudRespHasNext)
+          .then(resp => {
+            console.warn(resp)
+            Toast.clear();
+          })
+          .catch(cloudRespShowError)
         }
       })
     },
