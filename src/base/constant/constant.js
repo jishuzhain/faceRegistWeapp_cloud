@@ -6,7 +6,8 @@ const CONSTANT = {
     WARNING: '#E6A23C',
     DANGER: '#F56C6C',
     INFO: '#909399'
-  }
+  },
+  USER_INFO: {}
 }
 
 export default CONSTANT;

@@ -1,6 +1,7 @@
 {
-  "navigationBarTitleText": "访客登记",
+  "navigationBarTitleText": "个人信息",
   "usingComponents": {
+    "van-cell": "../../static/vant/cell/index",
     "van-loading": "../../static/vant/loading/index",
     "van-notify": "../../static/vant/notify/index",
     "van-dialog": "../../static/vant/dialog/index",

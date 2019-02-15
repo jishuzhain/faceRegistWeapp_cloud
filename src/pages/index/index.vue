@@ -46,14 +46,19 @@
     <!-- <van-loading type="circular" color="red"/> -->
     <van-toast id="van-toast" />
     <van-notify id="van-notify"/>
+    <van-dialog id="van-dialog" />
+    
   </div>
 </template>
 
 <script>
 import card from '@/components/card';
 import Toast from '../../../static/vant/toast/toast';
+import Dialog from '../../../static/vant/dialog/dialog';
 //import Notify from '../../../static/vant/notify/notify';
 import Notify from '../../utils/notify';
+import CONSTANT from '@/base/constant/constant';
+
 
 import { http_saveVisitor } from '@/utils/http';
 import { cloudRespHasNext, cloudRespShowError, respShowError } from '@/utils/index';
@@ -63,6 +68,7 @@ const fileManager = wx.getFileSystemManager();
 export default {
   created() {
     //console.warn('created..')
+    
   },
   updated() {
     //console.warn('updated..')
@@ -72,6 +78,7 @@ export default {
   },
   onShow() {
     //console.warn('onShow..')
+    this.getUserInfo();
   },
   data () {
     return {
@@ -97,10 +104,50 @@ export default {
     inputChange(e, itemName) {
       itemName && (this.mainItemForm[itemName] = e.mp.detail);
     },
+
     checkChange(e) {
       this.checked = !this.checked
       console.log("checkChange..")
     },
+
+    /**
+     * @desc 获取用户信息
+     */
+    getUserInfo() {
+      const __this = this;
+      wx.getUserInfo({
+        success: __this.getUserInfoSucc,
+        fail: __this.getUserInfoFail,     //无法获取，弹窗引导用户授权
+        complete: function() {
+          // complete
+        }
+      })
+    },
+
+    /**
+     * @desc 获取用户信息成功的回调
+     * @param {Object} data 用户信息
+     */
+    getUserInfoSucc(data) {
+      console.log('打印userInfo', data)
+      CONSTANT.USER_INFO = data.userInfo;
+    },
+
+    /**
+     * @desc 获取用户信息失败的回调
+     */
+    getUserInfoFail(err) {
+      console.error('getUserInfoFail')
+      Dialog.alert({
+        title: '提示',
+        message: `请先授权小程序获取您的个人信息（昵称、姓名）`
+      }).then(() => {
+        wx.navigateTo({
+          url: '../authorization/main'
+        })
+      });
+    },
+
     /**
      * @desc 上传图片
      */
@@ -111,6 +158,7 @@ export default {
         success: self.showAcsSuc
       })
     },
+
     /**
      * @desc actionSheet 选择后的回调
      */
@@ -171,11 +219,6 @@ export default {
         success(resp) {
           params.faceImage = resp.data;    //服务器需要base64图片
           console.warn('发起请求')
-          // http_saveVisitor(params, {loading: true})
-          //   .then(resp => {
-          //     Notify.success("新增访客成功");
-          //   })
-          //   .catch(respShowError)
           wx.cloud.callFunction({
             name: 'saveVisitor',
             data: { params, custom: {loading: true} }

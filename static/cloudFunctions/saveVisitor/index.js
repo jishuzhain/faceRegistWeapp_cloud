@@ -12,8 +12,8 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 //云函数入口
 exports.main = async (event, context) => {
   return new Promise(function(resolve, reject) {
-    console.log('打印event');
-    console.log(event);
+    console.log('打印event.userInfo');
+    console.log(event.userInfo);
     axios.post(SERVER_IP + URL, event.params, {})
       .then(resp => {
         console.log("接下来打印resp")
